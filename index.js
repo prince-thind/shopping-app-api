@@ -1,25 +1,22 @@
 require("dotenv").config();
 const fetchRecords = require("./lib/fetchRecords");
-const falso = require("@ngneat/falso");
 
 const PORT = process.env.PORT;
 
 const express = require("express");
 const app = express();
 
-app.get("/", (req, res) => {
+app.get("/items.json", (req, res) => {
   let num = req.query.n ?? 15;
-  let name = req.query.name ?? falso.randProductName;
 
-  name = sanitiseName(name);
   num = sanitiseNum(num);
 
-  fetchRecords(name, num)
+  fetchRecords(num)
     .then((response) => {
-      res.json({ data: response, error: null });
+      res.json({ items: response, error: null });
     })
     .catch((error) => {
-      res.json({ data: null, error });
+      res.json({ items: null, error });
     });
 });
 
@@ -27,19 +24,6 @@ app.listen(PORT, () => {
   console.log(`App listening on ${PORT}, visit http://localhost:${PORT}`);
 });
 
-function sanitiseName(name) {
-  let res = null;
-
-  if (typeof name !== "string") {
-    name = "";
-  }
-
-  if (name.length > 50) {
-    res = name.slice(0, 50);
-  }
-
-  return res;
-}
 
 function sanitiseNum(input) {
   let num = 1;
