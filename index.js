@@ -1,10 +1,15 @@
 require("dotenv").config();
+const cors=require('cors');
 const fetchRecords = require("./lib/fetchRecords");
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT||8001;
 
 const express = require("express");
 const app = express();
+
+app.use(cors({
+  origin:process.env.ORIGIN,
+}));
 
 app.get("/items.json", (req, res) => {
   let num = req.query.n ?? 15;
@@ -17,6 +22,7 @@ app.get("/items.json", (req, res) => {
     })
     .catch((error) => {
       res.json({ items: null, error });
+      console.log(error)
     });
 });
 
